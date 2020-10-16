@@ -1,4 +1,5 @@
 # Copyright (c) 2019 Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2020 Computaris and/or its affiliates. All rights reserved.
 #
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 #
@@ -9,21 +10,21 @@
 # REQUIRED FILES TO BUILD THIS IMAGE
 # ----------------------------------
 #
-# (1) server-jre-8uXX-linux-x64.tar.gz
+# (1) jdk-8uXX-linux-x64.tar.gz
 #     Download from https://www.oracle.com/java/technologies/javase-server-jre8-downloads.html
 #
 # HOW TO BUILD THIS IMAGE
 # -----------------------
 # Put all downloaded files in the same directory as this Dockerfile
 # Run:
-#      $ docker build -t oracle/serverjre:8 .
+#      $ docker build -t cts/oraclejdk:8 .
 #
 # This command is already scripted in build.sh so you can alternatively run
 #		$ bash build.sh
 #
 # The builder image will be used to uncompress the tar.gz file with the Java Runtime.
 
-FROM oraclelinux:7-slim as builder
+FROM centos:7 as builder
 
 MAINTAINER Aurelio Garcia-Ribeyro <aurelio.garciaribeyro@oracle.com>
 
@@ -42,8 +43,8 @@ ENV LANG en_US.UTF-8
 # Environment variables for the builder image.  
 # Required to validate that you are using the correct file
 
-ENV JAVA_PKG=server-jre-8u261-linux-x64.tar.gz \
-	JAVA_SHA256=970eec4e5212721d5c8f9f52a5ab89b776884dc3c886bfbe010973d30114ffa9 \
+ENV JAVA_PKG=jdk-8u261-linux-x64.tar.gz \
+	JAVA_SHA256=5a04e01a091f6b1ed9c0b801be4fd10689af07eeb9e27f012c9aa3af9948ea34 \
 	JAVA_HOME=/usr/java/jdk-8
 
 COPY $JAVA_PKG /tmp/jdk.tgz
@@ -55,7 +56,7 @@ RUN set -eux; \
 
 ## Get a fresh version of SLIM for the final image
 
-FROM oraclelinux:7-slim
+FROM centos:7
 
 # Default to UTF-8 file.encoding
 ENV LANG en_US.UTF-8
